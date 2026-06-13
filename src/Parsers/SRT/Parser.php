@@ -15,7 +15,7 @@ class Parser implements ParserInterface
 		$firstLine = trim( $content[ 0 ]);
 		$secondLine = trim( $content[ 1 ]);
 		$timePattern = '/^(\d{2}:\d{2}:\d{2}),(\d{3}) --> (\d{2}:\d{2}:\d{2}),(\d{3})$/';
-		$isFirstLineDecimal = preg_match( '/^\d$/', $firstLine );
+		$isFirstLineDecimal = preg_match( '/^\d+$/', $firstLine );
 		$isSecondLineTime = preg_match( $timePattern, $secondLine );
 
 		return $isFirstLineDecimal && $isSecondLineTime;
