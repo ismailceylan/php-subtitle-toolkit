@@ -1,0 +1,18 @@
+{
+    "name": "iceylan/subtitle",
+    "description": "A comprehensive subtitle parser and renderer library.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Iceylan\\Subtitle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ismail Ceylan",
+            "email": "ismaillceylan@gmail.com"
+        }
+    ],
+    "require": {}
+}
