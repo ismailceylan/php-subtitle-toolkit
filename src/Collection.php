@@ -137,6 +137,8 @@ class Collection implements JsonSerializable
 			unset( $this->entries[ $i ]);
 		}
 
+		$this->entries = array_values( $this->entries );
+
 		return $this;
 	}
 
