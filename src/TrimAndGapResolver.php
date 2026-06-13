@@ -11,15 +11,16 @@ class TrimAndGapResolver implements OverlapsResolverInterface
 	)
 	{}
 
-	public function resolve( array $entries ): array
+	public function resolve( Collection $subtitle ): Collection
 	{
-		$count = count( $entries );
+		$count = $subtitle->count();
 
 		if( $count <= 1 )
 		{
-			return $entries;
+			return $subtitle;
 		}
 
+		$entries = $subtitle->getEntries();
 		$processed = [];
 
 		for( $i = 0; $i < $count; $i++ )
@@ -49,6 +50,6 @@ class TrimAndGapResolver implements OverlapsResolverInterface
 			}
 		}
 
-		return $processed;
+		return ( new Collection )->from( $processed );
 	}
 }

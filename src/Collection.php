@@ -225,14 +225,9 @@ class Collection implements JsonSerializable
 
 	public function resolveOverlaps( ?OverlapsResolverInterface $resolver = null ): self
 	{
-		$cloned = clone $this;
 		$resolver ??= new TrimAndGapResolver( 10 );
 
-		$cloned->sort();
-
-		$resolvedEntries = $resolver->resolve( $cloned->entries );
-
-		return ( new self )->from( $resolvedEntries );
+		return $resolver->resolve(( clone $this )->sort());
 	}
 
 	public function render( string|RendererInterface $renderer ): string

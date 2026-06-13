@@ -2,7 +2,9 @@
 
 namespace Iceylan\Subtitle\Support;
 
+use Iceylan\Subtitle\Collection;
+
 interface OverlapsResolverInterface
 {
-	public function resolve( array $entries ): array;
+	public function resolve( Collection $entries ): Collection;
 }
