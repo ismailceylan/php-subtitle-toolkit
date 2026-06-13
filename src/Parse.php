@@ -46,6 +46,7 @@ class Parse
 		static::bootDefaults();
 
 		$content = file_get_contents( $path );
+		$content = str_replace( "\r\n", "\n", $content ); // normalize line endings
 		$extension = strtolower( pathinfo( $path, PATHINFO_EXTENSION ));
 
 		foreach( static::$drivers as $driverClass )
