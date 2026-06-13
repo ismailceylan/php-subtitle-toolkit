@@ -19,7 +19,11 @@ class VTT implements RendererInterface
 			$start = $this->msToTimestamp( $entry->starts );
 			$end = $this->msToTimestamp( $entry->ends );
 
-			$block .= $entry->sequenceNumber . "\n";
+			if( ! is_null( $entry->sequenceNumber )) 
+			{
+				$block .= $entry->sequenceNumber . "\n";
+			}
+
 			$block .= "$start --> $end\n";
 			$block .= implode( "\n", $entry->content );
 
