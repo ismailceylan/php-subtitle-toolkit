@@ -22,7 +22,7 @@ class Helper
 			'hours' => $formattedHours,
 			'minutes' => $formattedMinutes,
 			'seconds' => $formattedSeconds,
-			'miliseconds' => $formattedMilliseconds
+			'milliseconds' => $formattedMilliseconds
 		];
 	}
 }

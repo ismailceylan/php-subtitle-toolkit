@@ -37,8 +37,8 @@ class VTT implements RendererInterface
 		$hours = $time[ 'hours' ];
 		$minutes = $time[ 'minutes' ];
 		$seconds = $time[ 'seconds' ];
-		$miliseconds = $time[ 'miliseconds' ];
+		$milliseconds = $time[ 'milliseconds' ];
 
-		return "$hours:$minutes:$seconds.$miliseconds";
+		return "$hours:$minutes:$seconds.$milliseconds";
 	}
 }
