@@ -19,15 +19,14 @@ class VTT implements RendererInterface
 			$start = $this->msToTimestamp( $entry->starts );
 			$end = $this->msToTimestamp( $entry->ends );
 
-			// $block .= $entry->sequenceNumber . "\n";
-			$block .= ( $index + 1 ) . "\n";
+			$block .= $entry->sequenceNumber . "\n";
 			$block .= "$start --> $end\n";
 			$block .= implode( "\n", $entry->content );
 
 			$document[] = $block;
 		}
 
-		return "WEBVTT\n\n" . implode( "\n\n", $document );
+		return "WEBVTT\n\n" . trim( implode( "\n\n", $document ));
 	}
 
 	private function msToTimestamp( int $ms ): string
