@@ -6,7 +6,7 @@ use Iceylan\Subtitle\Collection;
 use Iceylan\Subtitle\Support\Helper;
 use Iceylan\Subtitle\Support\RendererInterface;
 
-class VTTRenderer implements RendererInterface
+class VTT implements RendererInterface
 {
 	public function render( Collection $entries ): string
 	{

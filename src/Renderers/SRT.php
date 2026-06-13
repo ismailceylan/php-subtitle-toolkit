@@ -2,11 +2,11 @@
 
 namespace Iceylan\Subtitle\Renderers;
 
-use Iceylan\Subtitle\Support\Helper;
 use Iceylan\Subtitle\Collection;
+use Iceylan\Subtitle\Support\Helper;
 use Iceylan\Subtitle\Support\RendererInterface;
 
-class SRTRenderer implements RendererInterface
+class SRT implements RendererInterface
 {
 	public function render( Collection $entries ): string
 	{
