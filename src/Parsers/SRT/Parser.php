@@ -23,12 +23,12 @@ class Parser implements ParserInterface
 
 	public function parse( string $content ): Collection
 	{
-		$entries = new Collection;
+		$entries = [];
 		$lines = explode( "\n", trim( $content ));
 		$machine = new StateMachine;
 
 		$machine
-			->on( "block-ready", function( Block $block ) use( $entries )
+			->on( "block-ready", function( Block $block ) use( &$entries )
 			{
 				$entry = new Entry(
 					sequenceNumber: $block->sequenceNumber,
@@ -36,8 +36,8 @@ class Parser implements ParserInterface
 					ends: $block->getEndMs(),
 					content: $block->content
 				);
-
-				$entries->addEntry( $entry );
+				
+				$entries[] = $entry;
 			})
 			->on( "malformed-block", function()
 			{
@@ -53,6 +53,6 @@ class Parser implements ParserInterface
 		// to handle latest block that left in it
 		$machine->handle( "" );
 
-		return $entries;
+		return ( new Collection )->from( $entries );
 	}
 }

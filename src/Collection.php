@@ -12,6 +12,14 @@ class Collection implements JsonSerializable
 {
 	public array $entries = [];
 
+	public function __clone()
+	{
+		foreach( $this->entries as $index => $entry ) 
+		{
+			$this->entries[ $index ] = clone $entry;
+		}
+	}
+
 	public function get( int $index )
 	{
 		if( ! is_int((int) $index ))
@@ -69,21 +77,23 @@ class Collection implements JsonSerializable
 		return $lastEntry->ends - $firstEntry->starts;
 	}
 
-	public function addEntry( Entry $entry ): self
+	public function push( Entry $entry )
 	{
-		$this->entries[] = $entry;
-		$this->sort();
+		$cloned = clone $this;
+		$cloned->entries[] = $entry;
 
-		return $this;
+		return $cloned->sort();
 	}
 
 	public function sort(): self
 	{
-		usort( $this->entries, fn( Entry $a, Entry $b ) => 
+		$cloned = clone $this;
+
+		usort( $cloned->entries, fn( Entry $a, Entry $b ) => 
 			$a->starts <=> $b->starts
 		);
 
-		return $this;
+		return $cloned;
 	}
 
 	public function getEntries(): array
@@ -99,15 +109,19 @@ class Collection implements JsonSerializable
 
 	public function slice( int $startIndex, ?int $length = null ): self
 	{
-		return ( new self )->from(
-			array_slice( $this->entries, $startIndex, $length )
+		$cloned = clone $this;
+
+		return $cloned->from(
+			array_slice( $cloned->entries, $startIndex, $length )
 		);
 	}
 
 	public function merge( Collection $other ): self
 	{
-		return ( new self )
-			->from( array_merge( $this->entries, $other->getEntries()))
+		$cloned = clone $this;
+
+		return $cloned
+			->from( array_merge( $cloned->entries, $other->getEntries()))
 			->sort();
 	}
 
@@ -118,40 +132,38 @@ class Collection implements JsonSerializable
 
 	public function delayFrom( int $from, int $ms ): self
 	{
-		foreach( array_slice( $this->entries, $from ) as $entry )
+		$cloned = clone $this;
+
+		foreach( array_slice( $cloned->entries, $from, null, true ) as $entry )
 		{
 			$entry->starts += $ms;
 			$entry->ends += $ms;
 		}
 
-		return $this;
+		return $cloned;
 	}
 
 	public function cut( int $from, int $length = 1 ): self
 	{
-		$entries = $this->slice( $from, $length );
-		$this->delayFrom( $from, -1 * $entries->duration());
+		$cloned = clone $this;
+		$entries = $cloned->slice( $from, $length );
+		$cloned->delayFrom( $from, -1 * $entries->duration());
 
 		for( $i = $from; $i < $from + $length; $i++ )
 		{
-			unset( $this->entries[ $i ]);
+			unset( $cloned->entries[ $i ]);
 		}
 
-		$this->entries = array_values( $this->entries );
+		$cloned->entries = array_values( $cloned->entries );
 
-		return $this;
-	}
-
-	public function push( Entry $entry )
-	{
-		$this->entries[] = $entry;
-		
-		return $this->sort();
+		return $cloned;
 	}
 
 	public function sanitize(): self
 	{
-		foreach( $this->entries as $entry )
+		$cloned = clone $this;
+
+		foreach( $cloned->entries as $entry )
 		{
 			foreach( $entry->content as $index => $msg )
 			{
@@ -159,43 +171,46 @@ class Collection implements JsonSerializable
 			}
 		}
 
-		return $this;
+		return $cloned;
 	}
 
 	public function changeFPS( float $from, float $to ): self
 	{
+		$cloned = clone $this;
 		$ratio = $from / $to;
 
-		foreach( $this->entries as $entry )
+		foreach( $cloned->entries as $entry )
 		{
 			$entry->setStart( $entry->starts * $ratio );
 			$entry->setEnd( $entry->ends * $ratio );
 		}
 
-		return $this;
+		return $cloned;
 	}
 
 	public function stretch( int $srcAnchor1, int $desAnchor1, int $srcAnchor2, int $desAnchor2 ): self
 	{
+		$cloned = clone $this;
 		$srcDelta = $srcAnchor2 - $srcAnchor1;
 		$desDelta = $desAnchor2 - $desAnchor1;
 		$scale = $desDelta / $srcDelta;
 
-		foreach( $this->entries as $entry )
+		foreach( $cloned->entries as $entry )
 		{
 			$entry->setStart( $desAnchor1 + (( $entry->starts - $srcAnchor1 ) * $scale ));
 			$entry->setEnd( $desAnchor1 + (( $entry->ends - $srcAnchor1 ) * $scale ));
 		}
 
-		return $this;
+		return $cloned;
 	}
 
 	public function filter( Closure $callback ): self
 	{
+		$cloned = clone $this;
 		$stack = [];
 		$collection = new self;
 
-		foreach( $this->entries as $entry )
+		foreach( $cloned->entries as $entry )
 		{
 			if( $callback( $entry ))
 			{
@@ -210,11 +225,12 @@ class Collection implements JsonSerializable
 
 	public function resolveOverlaps( ?OverlapsResolverInterface $resolver = null ): self
 	{
+		$cloned = clone $this;
 		$resolver ??= new TrimAndGapResolver( 10 );
 
-		$this->sort();
+		$cloned->sort();
 
-		$resolvedEntries = $resolver->resolve( $this->entries );
+		$resolvedEntries = $resolver->resolve( $cloned->entries );
 
 		return ( new self )->from( $resolvedEntries );
 	}
