@@ -242,7 +242,7 @@ class Collection implements JsonSerializable
 			$renderer = new $renderer();
 		}
 
-		return $renderer->render( $this );
+		return trim( $renderer->render( $this ));
 	}
 
 	public function jsonSerialize(): mixed
