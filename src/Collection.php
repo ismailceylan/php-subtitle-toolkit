@@ -3,12 +3,13 @@
 namespace Iceylan\Subtitle;
 
 use Closure;
+use Countable;
 use JsonSerializable;
 use InvalidArgumentException;
 use Iceylan\Subtitle\Support\RendererInterface;
 use Iceylan\Subtitle\Support\OverlapsResolverInterface;
 
-class Collection implements JsonSerializable
+class Collection implements JsonSerializable, Countable
 {
 	public array $entries = [];
 
