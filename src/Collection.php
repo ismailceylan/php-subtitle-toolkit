@@ -121,6 +121,24 @@ class Collection implements JsonSerializable
 		return $total;
 	}
 
+	public function words(): int
+	{
+		$total = 0;
+
+		foreach( $this->entries as $entry ) 
+		{
+			$text = implode( ' ', $entry->content );
+			$words = preg_split( '/\s+/u', trim( $text ));
+			
+			if( ! empty( $words ) && $words[0] !== '' )
+			{
+				$total += count( $words );
+			}
+		}
+
+		return $total;
+	}
+
 
 	public function push( Entry $entry )
 	{
