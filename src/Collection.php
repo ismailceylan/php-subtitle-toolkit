@@ -228,6 +228,27 @@ class Collection implements JsonSerializable
 			->sort();
 	}
 
+	public function append( Collection $other, int $gapMs = 0 ): self
+	{
+		if( $this->count() === 0 ) 
+		{
+			return clone $other;
+		}
+
+		if( $other->count() === 0 ) 
+		{
+			return clone $this;
+		}
+
+		$lastEntryEnd = $this->get( -1 )->ends;
+		$otherFirstEntryStart = $other->get( 0 )->starts;
+		$shiftAmount = $lastEntryEnd - $otherFirstEntryStart + $gapMs;
+		$shiftedOther = $other->delay( $shiftAmount );
+
+		return $this->merge( $shiftedOther );
+	}
+
+
 	public function delay( int $ms ): self
 	{
 		return $this->delayFrom( 0, $ms );
