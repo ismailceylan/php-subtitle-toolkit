@@ -202,6 +202,14 @@ class Collection implements JsonSerializable
 		);
 	}
 
+	public function between( int $startMs, int $endMs ): self
+	{
+		return $this->filter( fn( Entry $entry ) =>
+			$entry->starts >= $startMs && $entry->ends <= $endMs
+		);
+	}
+
+
 	public function merge( Collection $other ): self
 	{
 		$cloned = clone $this;
