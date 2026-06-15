@@ -248,6 +248,30 @@ class Collection implements JsonSerializable
 		return $this->merge( $shiftedOther );
 	}
 
+	public function map( Closure $callback ): self
+	{
+		// 1. Mevcut koleksiyonu ve yapısını klonla
+		$cloned = clone $this;
+		$mappedEntries = [];
+
+		foreach( $cloned->entries as $index => $entry ) 
+		{
+			// 2. Her bir entry'yi klonlayarak izole ediyoruz (Veri güvenliği)
+			$clonedEntry = clone $entry;
+
+			// 3. Kullanıcının closure fonksiyonunu çalıştırıyoruz
+			// Callback fonksiyonu geriye güncellenmiş bir Entry nesnesi dönmeli
+			$result = $callback( $clonedEntry, $index );
+
+			if( $result instanceof \Iceylan\Subtitle\Entry ) 
+			{
+				$mappedEntries[] = $result;
+			}
+		}
+
+		return $cloned->from( $mappedEntries )->sort();
+	}
+
 
 	public function delay( int $ms ): self
 	{
