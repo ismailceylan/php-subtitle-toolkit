@@ -4,12 +4,14 @@ namespace Iceylan\Subtitle;
 
 use Closure;
 use Countable;
+use ArrayAccess;
 use JsonSerializable;
+use RuntimeException;
 use InvalidArgumentException;
 use Iceylan\Subtitle\Support\RendererInterface;
 use Iceylan\Subtitle\Support\OverlapsResolverInterface;
 
-class Collection implements JsonSerializable, Countable
+class Collection implements JsonSerializable, Countable, ArrayAccess
 {
 	public array $entries = [];
 
@@ -409,5 +411,29 @@ class Collection implements JsonSerializable, Countable
 	public function jsonSerialize(): mixed
 	{
 		return $this->entries;
+	}
+
+	public function offsetExists( mixed $offset ): bool
+	{
+		return isset( $this->entries[ $offset ]);
+	}
+
+	public function offsetGet( mixed $offset ): mixed
+	{
+		return $this->get((int) $offset );
+	}
+
+	public function offsetSet( mixed $offset, mixed $value ): void
+	{
+		throw new RuntimeException(
+			"The Collection object is immutable. You cannot add or update elements using square brackets. Please use the push() or map() methods."
+		);
+	}
+
+	public function offsetUnset( mixed $offset ): void
+	{
+		throw new RuntimeException(
+			"The Collection object is immutable. You cannot remove elements using square brackets. Please use the cut() or filter() methods."
+		);
 	}
 }
