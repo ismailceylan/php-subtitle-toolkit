@@ -77,6 +77,11 @@ class Collection implements JsonSerializable
 		return $lastEntry->ends - $firstEntry->starts;
 	}
 
+	public function avgDurationPerEntry()
+	{
+		return $this->screenTime() / $this->count();
+	}
+
 	public function push( Entry $entry )
 	{
 		$cloned = clone $this;
