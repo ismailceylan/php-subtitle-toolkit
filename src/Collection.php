@@ -109,6 +109,19 @@ class Collection implements JsonSerializable
 		return $this->silentTime() / ( $count - 1 );
 	}
 
+	public function characters(): int
+	{
+		$total = 0;
+
+		foreach( $this->entries as $entry )
+		{
+			$total += mb_strlen( str_replace( " ", '', implode( '', $entry->content )));
+		}
+
+		return $total;
+	}
+
+
 	public function push( Entry $entry )
 	{
 		$cloned = clone $this;
