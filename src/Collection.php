@@ -115,7 +115,7 @@ class Collection implements JsonSerializable
 
 		foreach( $this->entries as $entry )
 		{
-			$total += mb_strlen( str_replace( " ", '', implode( '', $entry->content )));
+			$total += mb_strlen( str_replace( " ", '', implode( '', $entry->content )), 'UTF-8' );
 		}
 
 		return $total;
