@@ -272,6 +272,18 @@ class Collection implements JsonSerializable
 		return $cloned->from( $mappedEntries )->sort();
 	}
 
+	public function each( Closure $callback ): self
+	{
+		foreach( $this->entries as $index => $entry ) 
+		{
+			if( $callback( $entry, $index ) === false )
+			{
+				break;
+			}
+		}
+
+		return $this;
+	}
 
 	public function delay( int $ms ): self
 	{
