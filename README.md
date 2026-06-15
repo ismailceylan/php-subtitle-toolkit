@@ -486,10 +486,33 @@ class MyCustomParser implements ParserInterface
 }
 ```
 
+---
+
 ## Contributing
 I welcome all kind of contributions!
 
 The infrastructure is built using the Infrastructure Strategy Pattern. To add a new format, simply write a class that implements `ParserInterface` and `RendererInterface`, place them in the appropriate directories, register them in the `Parser` class, and submit a PR, that’s all you need to do!
+
+## Upcoming Planned Features
+I am committed to making this package the ultimate **Subtitle Swiss Army Knife** for PHP. Here are the enterprise-grade concepts and features currently in active planning. If you want to contribute to any of these, feel free to open an Issue or PR!
+
+- [ ] **Subtitle Validator**
+  * An automated quality control engine to validate structural correctness before rendering or uploading.
+  * *Features:* Check for empty cue blocks, flag hyper-short durations (e.g., cues under 300ms), detect character-per-line (CPL) threshold violations, and warn if an entry exceeds industry-standard safe line counts (e.g., max 2 lines).
+- [ ] **Smart HTTP Output & Streaming Drivers**
+  * Seamless integration out of the box for modern frameworks like Laravel and Symfony to handle file delivery.
+  * *Features:* Direct-to-browser attachment download wrappers, automated server-side content-type handling (`text/vtt`, `application/x-subrip`), and memory-optimized stream transmitters for massive subtitle files.
+- [ ] **Bulletproof Encoding & Charset Gateway**
+  * Auto-remediation gateway integrated directly into the `Parse::from()` workflow to end encoding nightmares once and for all.
+  * *Features:* Automatic runtime detection of legacy charsets (like `Windows-1254`, `ISO-8859-9`, `UTF-16`) and transparent background translation into pure, uncorrupted UTF-8 before parsing begins. Perfect for reliable localization.
+- [ ] **Advanced Typography & Rich Document Object Model (DOM)**
+  * Moving away from flat string arrays to an isolated, robust typography and word-granularity ecosystem without breaking backward compatibility or complicating simple formats like SRT.
+  * *Hierarchical Components:*
+    * `Content\Style`: A standalone object housing explicit format properties like `bold`, `italic`, `underline`, and color codes (e.g., hex, named colors). Can be attached globally to an entire cue or down to individual tokens.
+    * `Content\Document`: Replaces the raw text array inside `Entry::$content` but implements `ArrayAccess`, `Countable`, and `IteratorAggregate` to act exactly like an array from the outside.
+    * `Content\Line`: Represents a single line within a subtitle block, managing an isolated collection of structural words/tokens.
+    * `Content\Word`: The atomic unit of text. Houses individual token values, custom word-level styling, and temporal offsets relative to the main cue's timeline (essential for implementing state-of-the-art **Karaoke / Word-by-Word** highlighting modes like in advanced WebVTT/ASS workflows).
+---
 
 ## License
 This library is released under the [MIT License](https://github.com/ismailceylan/php-subtitle-toolkit/blob/main/LICENSE).
