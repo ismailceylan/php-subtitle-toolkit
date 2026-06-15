@@ -151,6 +151,18 @@ class Collection implements JsonSerializable
 		return round( $this->characters() / $screenTimeSec, 2 );
 	}
 
+	public function avgWordsPerMinute(): float
+	{
+		$screenTimeMin = $this->screenTime() / 60000;
+
+		if( $screenTimeMin <= 0 )
+		{
+			return 0.0;
+		}
+
+		return round( $this->words() / $screenTimeMin, 2 );
+	}
+
 	public function push( Entry $entry )
 	{
 		$cloned = clone $this;
