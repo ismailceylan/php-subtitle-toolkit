@@ -274,7 +274,9 @@ class Collection implements JsonSerializable
 
 	public function each( Closure $callback ): self
 	{
-		foreach( $this->entries as $index => $entry ) 
+		$cloned = clone $this;
+
+		foreach( $cloned->entries as $index => $entry ) 
 		{
 			if( $callback( $entry, $index ) === false )
 			{
@@ -282,7 +284,7 @@ class Collection implements JsonSerializable
 			}
 		}
 
-		return $this;
+		return $cloned;
 	}
 
 	public function delay( int $ms ): self
