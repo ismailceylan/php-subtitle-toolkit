@@ -97,6 +97,17 @@ class Collection implements JsonSerializable
 		return $this->screenTime() / $this->silentTime();
 	}
 
+	public function avgSilenceBetweenEntries(): float
+	{
+		$count = $this->count();
+		
+		if( $count <= 1 )
+		{
+			return 0.0;
+		}
+
+		return $this->silentTime() / ( $count - 1 );
+	}
 
 	public function push( Entry $entry )
 	{
