@@ -209,6 +209,11 @@ class Collection implements JsonSerializable
 		);
 	}
 
+	public function until( int $endMs ): self
+	{
+		return $this->between( 0, $endMs );
+	}
+
 
 	public function merge( Collection $other ): self
 	{
