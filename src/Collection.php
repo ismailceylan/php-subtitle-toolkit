@@ -69,6 +69,11 @@ class Collection implements JsonSerializable
 		return $total;
 	}
 
+	public function silentTime(): int
+	{
+		return $this->screenTime() - $this->duration();
+	}
+
 	public function duration(): int
 	{
 		$firstEntry = $this->entries[ 0 ];
@@ -77,7 +82,7 @@ class Collection implements JsonSerializable
 		return $lastEntry->ends - $firstEntry->starts;
 	}
 
-	public function avgDurationPerEntry()
+	public function avgDurationPerEntry(): int|float
 	{
 		return $this->screenTime() / $this->count();
 	}
