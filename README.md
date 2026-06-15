@@ -69,7 +69,9 @@ $converted = $original->changeFPS( 23.976, 25.0 );
 
 ## Complete API Reference
 ### Collection Queries
-#### `get(int $index): Entry`
+#### get
+`get(int $index): Entry`
+
 Retrieves a specific subtitle cue entry. Supports negative indexes to seamlessly grab entries counting back from the end of the timeline.
 
 ```php
@@ -77,28 +79,124 @@ $firstEntry = $collection->get( 0 );
 $lastEntry  = $collection->get( -1 ); // Python-style reverse indexing!
 ```
 
-#### `count(): int`
+#### count
+`count(): int`
+
 Returns the total number of subtitle entries inside the collection.
 
 ```php
 $totalCues = $collection->count();
 ```
 
-#### `screenTime(): int`
-Calculates the absolute summation of individual subtitle visibility durations in milliseconds.
+#### duration
+`duration(): int`
 
-```php
-$activeMilliseconds = $collection->screenTime();
-```
-
-#### `duration(): int`
 Calculates the gross chronological timeline span between the very first starting cue and the absolute last ending cue in milliseconds.
 
 ```php
 $totalMovieTimeSpan = $collection->duration();
 ```
 
-#### `getEntries(): array`
+#### characters
+`characters(): int`
+
+Returns the total number of characters across all subtitle cues.
+
+```php
+$totalCharacters = $collection->characters();
+// 75489
+```
+
+#### words
+`words(): int`
+
+Returns the total number of words across all subtitle cues.
+
+```php
+$totalWords = $collection->words();
+// 12295
+```
+
+#### screenTime
+`screenTime(): int`
+
+Calculates the absolute summation of individual subtitle visibility durations in milliseconds.
+
+```php
+$activeMilliseconds = $collection->screenTime();
+```
+
+#### silentTime
+`silentTime(): int`
+
+Calculates the absolute summation of individual subtitle silence durations in milliseconds.
+
+```php
+$inactiveMilliseconds = $collection->silentTime();
+```
+
+#### silenceDensity
+`silenceDensity(): float|int`
+
+Returns the ratio of the silent duration to the duration the text remains on the screen.
+
+```php
+$silenceRatio = $collection->silenceDensity();
+// 0.2485
+```
+
+#### talkativeDensity
+`talkativeDensity(): float|int`
+
+Returns the ratio of the time text remains hidden on the screen to the total visible time.
+
+```php
+$silenceRatio = $collection->talkativeDensity();
+// 4.2042
+```
+
+#### avgDurationPerEntry
+`avgDurationPerEntry(): float|int`
+
+Returns the average time (in milliseconds) each entry appears on the screen.
+
+```php
+$averageDuration = $collection->avgDurationPerEntry();
+```
+
+#### avgSilenceBetweenEntries
+`avgSilenceBetweenEntries(): float|int`
+
+Returns the average silence duration (in milliseconds) between subtitle cues.
+
+```php
+$averageSilence = $collection->avgSilenceBetweenEntries();
+// 731.3
+```
+
+#### avgCharsPerSecond
+`avgCharsPerSecond(): float|int`
+
+Returns the number of characters per second. This can be considered the average speed of the subtitles.
+
+```php
+$averageCharactersPerSecond = $collection->avgCharsPerSecond();
+// 13.29
+```
+
+#### avgWordsPerMinute
+`avgWordsPerMinute(): float|int`
+
+Returns the number of words per minute.
+
+```php
+$averageWordsPerMinute = $collection->avgWordsPerMinute();
+// 130.61
+```
+
+#### getEntries
+`getEntries(): array`
+
 Extracts the underlying raw array containing all Entry instances.
 
 ```php
@@ -106,7 +204,9 @@ $rawArray = $collection->getEntries();
 ```
 
 ### Collection Transformations
-#### `delay(int $ms): Collection`
+#### delay
+`delay(int $ms): Collection`
+
 Shifts the entire subtitle track timeline forward or backward by the given amount of milliseconds.
 
 ```php
@@ -114,7 +214,9 @@ $twoSecsForward = $collection->delay( 2000 );
 $oneSecBackward = $collection->delay( -1000 );
 ```
 
-#### `delayFrom(int $fromIndex, int $ms): Collection`
+#### delayFrom
+`delayFrom(int $fromIndex, int $ms): Collection`
+
 Shifts timelines by milliseconds exclusively for entries starting from a specific index boundary up to the end.
 
 ```php
@@ -122,28 +224,36 @@ Shifts timelines by milliseconds exclusively for entries starting from a specifi
 $partiallyShifted = $collection->delayFrom( 15, 3000 );
 ```
 
-#### `cut(int $fromIndex, int $length = 1): Collection`
+#### cut
+`cut(int $fromIndex, int $length = 1): Collection`
+
 Excises a specific range of subtitle cues out of the collection and automatically retrofits the chronologically succeeding blocks back in time to heal the gap.
 
 ```php
 $trimmedCollection = $collection->cut(from: 10, length: 3);
 ```
 
-#### `sanitize(): Collection`
+#### sanitize
+`sanitize(): Collection`
+
 Loops through all textual contents of the cues and strips out any untrusted markup or HTML tags.
 
 ```php
 $cleanTextCollection = $collection->sanitize();
 ```
 
-#### `changeFPS(float $from, float $to): Collection`
+#### changeFPS
+`changeFPS(float $from, float $to): Collection`
+
 Re-calculates all timestamp sequences proportionally to match target frame rate transitions.
 
 ```php
 $palVersion = $collection->changeFPS( 23.976, 25.0 );
 ```
 
-#### `stretch(int $srcAnchor1, int $desAnchor1, int $srcAnchor2, int $desAnchor2): Collection`
+#### stretch
+`stretch(int $srcAnchor1, int $desAnchor1, int $srcAnchor2, int $desAnchor2): Collection`
+
 Applies linear time interpolation scaling across the entire timeline using two custom real-time reference anchor coordinates. Perfect for syncing subtitles when the frame rate is unknown.
 
 ```php
@@ -153,7 +263,9 @@ $syncedCollection = $collection->stretch(
 );
 ```
 
-#### `filter(Closure $callback): Collection`
+#### filter
+`filter(Closure $callback): Collection`
+
 Filters the collection using a custom boolean evaluation closure. Returns a brand new subset collection.
 
 ```php
@@ -163,21 +275,27 @@ $adsRemoved = $collection->filter( function( Entry $entry )
 });
 ```
 
-#### `slice(int $startIndex, ?int $length = null): Collection`
+#### slice
+`slice(int $startIndex, ?int $length = null): Collection`
+
 Extracts a designated window slice out of the collection sequence.
 
 ```php
 $firstTenLines = $collection->slice(0, 10);
 ```
 
-#### `merge(Collection $other): Collection`
+#### merge
+`merge(Collection $other): Collection`
+
 Merges two separate collections together and automatically re-sorts them chronologically.
 
 ```php
 $fullSubtitles = $partOneCollection->merge($partTwoCollection);
 ```
 
-#### `push(Entry $entry) / addEntry(Entry $entry): Collection`
+#### push
+`push(Entry $entry) / addEntry(Entry $entry): Collection`
+
 Safely appends a new subtitle element block into the timeline pool and auto-arranges its chronological index placement.
 
 ```php
@@ -192,7 +310,9 @@ $newCue = ( new Entry )
 $updatedCollection = $collection->push( $newCue );
 ```
 
-#### `resolveOverlaps(?OverlapsResolverInterface $resolver = null): Collection`
+#### resolveOverlaps
+`resolveOverlaps(?OverlapsResolverInterface $resolver = null): Collection`
+
 Resolves temporal overlapping collision structural errors where a trailing block's start overlaps a preceding block's end. Uses a default TrimAndGapResolver(10) if no strategy is specified.
 
 ```php
@@ -268,45 +388,6 @@ class MyCustomParser implements ParserInterface
         // Custom parsing state logic here...
         return $collection;
     }
-}
-```
-
-
-
-
-
-
-
-
-
-
-
-An `Entry` object represents a single subtitle block (cue) with its timeline and contents.
-
-#### Creating or Manipulating an Entry
-```php
-use Iceylan\Subtitle\Entry;
-
-$entry = new Entry();
-
-$entry->setSequenceNumber( 1 )
-      ->setStart( 1000 ) // 1 second
-      ->setEnd( 3500 ) // 3.5 seconds
-      ->addContent( "Hello World" )
-      ->addContent( "This is the second line" );
-
-echo $entry->duration(); // Outputs: 2500 (milliseconds)
-```
-
-### JSON Output Format
-When serialized via `json_encode( $entry )`, it outputs a highly optimized payload:
-
-```json
-{
-  "sq": 1,
-  "ms": ["Hello World", "This is the second line"],
-  "st": 1000,
-  "en": 3500
 }
 ```
 
