@@ -87,6 +87,12 @@ class Collection implements JsonSerializable
 		return $this->screenTime() / $this->count();
 	}
 
+	public function silenceDensity(): int|float
+	{
+		return $this->silentTime() / $this->screenTime();
+	}
+
+
 	public function push( Entry $entry )
 	{
 		$cloned = clone $this;
