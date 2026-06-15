@@ -214,6 +214,10 @@ class Collection implements JsonSerializable
 		return $this->between( 0, $endMs );
 	}
 
+	public function since( int $startMs ): self
+	{
+		return $this->between( $startMs, PHP_INT_MAX );
+	}
 
 	public function merge( Collection $other ): self
 	{
