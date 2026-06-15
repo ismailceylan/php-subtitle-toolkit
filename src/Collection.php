@@ -92,6 +92,11 @@ class Collection implements JsonSerializable
 		return $this->silentTime() / $this->screenTime();
 	}
 
+	public function talkativeDensity(): int|float
+	{
+		return $this->screenTime() / $this->silentTime();
+	}
+
 
 	public function push( Entry $entry )
 	{
