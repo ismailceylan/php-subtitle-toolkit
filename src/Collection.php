@@ -139,6 +139,17 @@ class Collection implements JsonSerializable
 		return $total;
 	}
 
+	public function avgCharsPerSecond(): float
+	{
+		$screenTimeSec = $this->screenTime() / 1000;
+
+		if( $screenTimeSec <= 0 )
+		{
+			return 0.0;
+		}
+
+		return round( $this->characters() / $screenTimeSec, 2 );
+	}
 
 	public function push( Entry $entry )
 	{
