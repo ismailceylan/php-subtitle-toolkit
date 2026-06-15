@@ -274,17 +274,15 @@ class Collection implements JsonSerializable
 
 	public function each( Closure $callback ): self
 	{
-		$cloned = clone $this;
-
-		foreach( $cloned->entries as $index => $entry ) 
+		foreach( $this->entries as $index => $entry ) 
 		{
-			if( $callback( $entry, $index ) === false )
+			if( $callback( clone $entry, $index ) === false )
 			{
 				break;
 			}
 		}
 
-		return $cloned;
+		return $this;
 	}
 
 	public function delay( int $ms ): self
