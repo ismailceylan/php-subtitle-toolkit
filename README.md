@@ -79,6 +79,50 @@ $firstEntry = $collection->get( 0 );
 $lastEntry  = $collection->get( -1 ); // Python-style reverse indexing!
 ```
 
+Or you can also use the subtitle collection like an array:
+
+```php
+$firstEntry = $collection[ 0 ];
+$lastEntry  = $collection[ -1 ]; // Python-style reverse indexing!
+```
+
+#### getEntries
+`getEntries(): array`
+
+Extracts the underlying raw array containing all Entry instances.
+
+```php
+$rawArray = $collection->getEntries();
+```
+
+#### between
+`between(int $startMs, int $endMs): Collection`
+
+Retrieves subtitle cues between two timestamps in milliseconds.
+
+```php
+$timeWindow = $collection->between( 15000, 80000 );
+// between first 15 and 80 seconds
+```
+
+#### until
+`until(int $endMs): Collection`
+
+Retrieves subtitle cues until a specific timestamp in milliseconds.
+
+```php
+$firstTenSeconds = $collection->until( 10000 );
+```
+
+#### since
+`since(int $startMs): Collection`
+
+Retrieves subtitle cues since a specific timestamp in milliseconds.
+
+```php
+$lastTenSeconds = $collection->since( 10000 );
+```
+
 #### count
 `count(): int`
 
@@ -86,6 +130,12 @@ Returns the total number of subtitle entries inside the collection.
 
 ```php
 $totalCues = $collection->count();
+```
+
+Or you can also use the subtitle collection like an array:
+
+```php
+$totalCues = count( $collection );
 ```
 
 #### duration
@@ -194,15 +244,6 @@ $averageWordsPerMinute = $collection->avgWordsPerMinute();
 // 130.61
 ```
 
-#### getEntries
-`getEntries(): array`
-
-Extracts the underlying raw array containing all Entry instances.
-
-```php
-$rawArray = $collection->getEntries();
-```
-
 ### Collection Transformations
 #### delay
 `delay(int $ms): Collection`
@@ -275,6 +316,45 @@ $adsRemoved = $collection->filter( function( Entry $entry )
 });
 ```
 
+#### map
+`map(Closure $callback): Collection`
+
+Applies a custom callback to each entry in the collection. Returns a brand new subset collection.
+
+```php
+$toUpperCase = fn( Entry $entry ) => $entry->content = strtoupper( $entry->content );
+$upperCased = $collection->map( $toUpperCase );
+```
+
+If the callback returns anything other than an Entry object, neither that entry nor the returned value will be added to the final collection.
+
+#### each
+`each(Closure $callback): Collection`
+
+Applies a custom callback to each entry in the collection. Returns a brand new collection.
+
+```php
+$entry10 = $collection->get( 10 );
+
+$collection->each( function( Entry $entry, int $index )
+{
+    if( $index === 10 )
+    {
+        if( $entry === $entry10 )
+        {
+            // this line never gets executed
+        }
+        else 
+        {
+            exit(
+                'The $entry object cannot be modified because it is '.
+                'read-only while inside the immutable method'
+            );
+        }
+    }
+});
+```
+
 #### slice
 `slice(int $startIndex, ?int $length = null): Collection`
 
@@ -291,6 +371,21 @@ Merges two separate collections together and automatically re-sorts them chronol
 
 ```php
 $fullSubtitles = $partOneCollection->merge($partTwoCollection);
+```
+
+#### append
+`append(Collection $other, int $gapMs = 0): Collection`
+
+Appends one collection to the end of another. Optionally adds a safe gap between the two collections. It can be useful for example when you have two separate subtitle tracks that need to be merged together like CD1 and CD2.
+
+```php
+$CD1 = Parse::from( "movie/cd-1.srt" ); // items 500
+$CD2 = Parse::from( "movie/cd-2.srt" ); // items 200
+
+$fullSubtitles = $CD1->append( $CD2, 1000 );
+
+echo $CD1->count(); // 500
+echo $fullSubtitles->count(); // 700
 ```
 
 #### push
