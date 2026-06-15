@@ -71,7 +71,7 @@ class Collection implements JsonSerializable
 
 	public function silentTime(): int
 	{
-		return $this->screenTime() - $this->duration();
+		return $this->duration() - $this->screenTime();
 	}
 
 	public function duration(): int
