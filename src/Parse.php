@@ -30,7 +30,7 @@ class Parse
 			if( ! is_subclass_of( $driverClass, ParserInterface::class ))
 			{
 				throw new InvalidArgumentException(
-					"Parser sınıfları ParserInterface arayüzünü uygulamalıdır!"
+					"A parser class should implements ParserInterface."
 				);
 			}
 
@@ -57,6 +57,6 @@ class Parse
 			}
 		}
 
-		throw new InvalidArgumentException( "Bu altyazı formatı desteklenmiyor!" );
+		throw new InvalidArgumentException( "This subtitle format doesn't supported yet!" );
 	}
 }

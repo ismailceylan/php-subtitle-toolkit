@@ -28,20 +28,19 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		if( ! is_int((int) $index ))
 		{
 			throw new InvalidArgumentException(
-				"İndeks yalnızca tam sayı olmalıdır."
+				"Index position should only be an integer."
 			);
 		}
 
 		$count = count( $this->entries );
 
-		// 2. Negatif İndeks Kontrolü (Sondan Erişim)
 		if( $index < 0 )
 		{
 			$positiveIndex = $count + $index;
 
 			if( $positiveIndex < 0 || $positiveIndex >= $count )
 			{
-				throw new InvalidArgumentException( "Geçersiz negatif indeks." );
+				throw new InvalidArgumentException( 'Invalid negative index position.' );
 			}
 
 			return $this->entries[ $positiveIndex ];
@@ -52,7 +51,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 			return $this->entries[ $index ];
 		}
 
-		throw new InvalidArgumentException( "Geçersiz pozitif indeks." );
+		throw new InvalidArgumentException( 'Invalid positive index position.' );
 	}
 
 	public function count(): int
@@ -399,7 +398,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		{
 			if( ! class_exists( $renderer ) || ! is_subclass_of( $renderer, RendererInterface::class ))
 			{
-				throw new InvalidArgumentException( 'Bilinmeyen renderer sınıfı.' );
+				throw new InvalidArgumentException( 'Unknown renderer class.' );
 			}
 
 			$renderer = new $renderer();
