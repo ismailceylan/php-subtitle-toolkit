@@ -4,7 +4,7 @@ namespace Iceylan\Subtitle\Parsers\SRT;
 
 use InvalidArgumentException;
 use Iceylan\Subtitle\Entry;
-use Iceylan\Subtitle\Collection;
+use Iceylan\Subtitle\Subtitle;
 use Iceylan\Subtitle\Support\ParserInterface;
 
 class Parser implements ParserInterface
@@ -21,7 +21,7 @@ class Parser implements ParserInterface
 		return $isFirstLineDecimal && $isSecondLineTime;
 	}
 
-	public function parse( string $content ): Collection
+	public function parse( string $content ): Subtitle
 	{
 		$entries = [];
 		$lines = explode( "\n", trim( $content ));
@@ -53,6 +53,6 @@ class Parser implements ParserInterface
 		// to handle latest block that left in it
 		$machine->handle( "" );
 
-		return ( new Collection )->from( $entries );
+		return ( new Subtitle )->from( $entries );
 	}
 }

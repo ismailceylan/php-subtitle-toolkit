@@ -41,7 +41,7 @@ class Parse
 		}
 	}
 
-	public static function from( string $path ): Collection
+	public static function from( string $path ): Subtitle
 	{
 		static::bootDefaults();
 

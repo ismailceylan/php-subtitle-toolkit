@@ -11,7 +11,7 @@ use Iceylan\Subtitle\Support\Arrayable;
 use Iceylan\Subtitle\Support\RendererInterface;
 use Iceylan\Subtitle\Support\OverlapsResolverInterface;
 
-class Collection implements JsonSerializable, Countable, ArrayAccess
+class Subtitle implements JsonSerializable, Countable, ArrayAccess
 {
 	use Arrayable;
 
@@ -180,7 +180,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		return $this->between( $startMs, PHP_INT_MAX );
 	}
 
-	public function merge( Collection $other ): self
+	public function merge( Subtitle $other ): self
 	{
 		$cloned = clone $this;
 
@@ -189,7 +189,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 			->sort();
 	}
 
-	public function append( Collection $other, int $gapMs = 0 ): self
+	public function append( Subtitle $other, int $gapMs = 0 ): self
 	{
 		if( $this->count() === 0 ) 
 		{

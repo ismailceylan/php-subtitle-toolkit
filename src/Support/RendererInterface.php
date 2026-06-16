@@ -2,9 +2,9 @@
 
 namespace Iceylan\Subtitle\Support;
 
-use Iceylan\Subtitle\Collection;
+use Iceylan\Subtitle\Subtitle;
 
 interface RendererInterface
 {
-	public function render( Collection $collection ): string;
+	public function render( Subtitle $collection ): string;
 }

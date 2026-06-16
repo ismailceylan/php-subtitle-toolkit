@@ -2,13 +2,13 @@
 
 namespace Iceylan\Subtitle\Renderers;
 
-use Iceylan\Subtitle\Collection;
+use Iceylan\Subtitle\Subtitle;
 use Iceylan\Subtitle\Support\Helper;
 use Iceylan\Subtitle\Support\RendererInterface;
 
 class VTT implements RendererInterface
 {
-	public function render( Collection $entries ): string
+	public function render( Subtitle $entries ): string
 	{
 		$document = [];
 

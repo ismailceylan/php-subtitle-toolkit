@@ -11,7 +11,7 @@ class TrimAndGapResolver implements OverlapsResolverInterface
 	)
 	{}
 
-	public function resolve( Collection $subtitle ): Collection
+	public function resolve( Subtitle $subtitle ): Subtitle
 	{
 		$count = $subtitle->count();
 
@@ -50,6 +50,6 @@ class TrimAndGapResolver implements OverlapsResolverInterface
 			}
 		}
 
-		return ( new Collection )->from( $processed );
+		return ( new Subtitle )->from( $processed );
 	}
 }

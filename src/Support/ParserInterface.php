@@ -2,11 +2,11 @@
 
 namespace Iceylan\Subtitle\Support;
 
-use Iceylan\Subtitle\Collection;
+use Iceylan\Subtitle\Subtitle;
 
 interface ParserInterface
 {
-	public function parse( string $content ): Collection;
+	public function parse( string $content ): Subtitle;
 	
 	public static function canParse( string $content, string $extension ): bool;
 
