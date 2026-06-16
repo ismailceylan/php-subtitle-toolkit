@@ -12,7 +12,7 @@ class SRT implements RendererInterface
 	{
 		$document = [];
 
-		foreach( $entries->entries as $index => $entry )
+		foreach( $entries->getEntries() as $index => $entry )
 		{
 			$block = '';
 

@@ -6,64 +6,28 @@ use Closure;
 use Countable;
 use ArrayAccess;
 use JsonSerializable;
-use RuntimeException;
 use InvalidArgumentException;
+use Iceylan\Subtitle\Support\Arrayable;
 use Iceylan\Subtitle\Support\RendererInterface;
 use Iceylan\Subtitle\Support\OverlapsResolverInterface;
 
 class Collection implements JsonSerializable, Countable, ArrayAccess
 {
-	public array $entries = [];
+	use Arrayable;
 
 	public function __clone()
 	{
-		foreach( $this->entries as $index => $entry ) 
+		foreach( $this->items as $index => $entry ) 
 		{
-			$this->entries[ $index ] = clone $entry;
+			$this->items[ $index ] = clone $entry;
 		}
-	}
-
-	public function get( int $index )
-	{
-		if( ! is_int((int) $index ))
-		{
-			throw new InvalidArgumentException(
-				"Index position should only be an integer."
-			);
-		}
-
-		$count = count( $this->entries );
-
-		if( $index < 0 )
-		{
-			$positiveIndex = $count + $index;
-
-			if( $positiveIndex < 0 || $positiveIndex >= $count )
-			{
-				throw new InvalidArgumentException( 'Invalid negative index position.' );
-			}
-
-			return $this->entries[ $positiveIndex ];
-		}
-
-		if( $index >= 0 && $index < $count )
-		{
-			return $this->entries[ $index ];
-		}
-
-		throw new InvalidArgumentException( 'Invalid positive index position.' );
-	}
-
-	public function count(): int
-	{
-		return count( $this->entries );
 	}
 
 	public function screenTime(): int
 	{
 		$total = 0;
 
-		foreach( $this->entries as $entry )
+		foreach( $this->items as $entry )
 		{
 			$total += $entry->duration();
 		}
@@ -78,8 +42,8 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 
 	public function duration(): int
 	{
-		$firstEntry = $this->entries[ 0 ];
-		$lastEntry = $this->entries[ count( $this->entries ) - 1 ];
+		$firstEntry = $this->items[ 0 ];
+		$lastEntry = $this->items[ count( $this->items ) - 1 ];
 
 		return $lastEntry->ends - $firstEntry->starts;
 	}
@@ -115,7 +79,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	{
 		$total = 0;
 
-		foreach( $this->entries as $entry )
+		foreach( $this->items as $entry )
 		{
 			$total += mb_strlen( str_replace( " ", '', implode( '', $entry->content )), 'UTF-8' );
 		}
@@ -127,7 +91,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	{
 		$total = 0;
 
-		foreach( $this->entries as $entry ) 
+		foreach( $this->items as $entry ) 
 		{
 			$text = implode( ' ', $entry->content );
 			$words = preg_split( '/\s+/u', trim( $text ));
@@ -168,7 +132,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	public function push( Entry $entry )
 	{
 		$cloned = clone $this;
-		$cloned->entries[] = $entry;
+		$cloned->items[] = $entry;
 
 		return $cloned->sort();
 	}
@@ -177,7 +141,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	{
 		$cloned = clone $this;
 
-		usort( $cloned->entries, fn( Entry $a, Entry $b ) => 
+		usort( $cloned->items, fn( Entry $a, Entry $b ) => 
 			$a->starts <=> $b->starts
 		);
 
@@ -186,12 +150,12 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 
 	public function getEntries(): array
 	{
-		return $this->entries;
+		return $this->items;
 	}
 
 	public function from( array $entries ): self
 	{
-		$this->entries = $entries;
+		$this->items = $entries;
 		return $this;
 	}
 
@@ -200,7 +164,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$cloned = clone $this;
 
 		return $cloned->from(
-			array_slice( $cloned->entries, $startIndex, $length )
+			array_slice( $cloned->items, $startIndex, $length )
 		);
 	}
 
@@ -226,7 +190,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$cloned = clone $this;
 
 		return $cloned
-			->from( array_merge( $cloned->entries, $other->getEntries()))
+			->from( array_merge( $cloned->items, $other->getEntries()))
 			->sort();
 	}
 
@@ -256,7 +220,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$cloned = clone $this;
 		$mappedEntries = [];
 
-		foreach( $cloned->entries as $index => $entry ) 
+		foreach( $cloned->items as $index => $entry ) 
 		{
 			// 2. Her bir entry'yi klonlayarak izole ediyoruz (Veri güvenliği)
 			$clonedEntry = clone $entry;
@@ -276,7 +240,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 
 	public function each( Closure $callback ): self
 	{
-		foreach( $this->entries as $index => $entry ) 
+		foreach( $this->items as $index => $entry ) 
 		{
 			if( $callback( clone $entry, $index ) === false )
 			{
@@ -296,7 +260,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	{
 		$cloned = clone $this;
 
-		foreach( array_slice( $cloned->entries, $from, null, true ) as $entry )
+		foreach( array_slice( $cloned->items, $from, null, true ) as $entry )
 		{
 			$entry->starts += $ms;
 			$entry->ends += $ms;
@@ -313,10 +277,10 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 
 		for( $i = $from; $i < $from + $length; $i++ )
 		{
-			unset( $cloned->entries[ $i ]);
+			unset( $cloned->items[ $i ]);
 		}
 
-		$cloned->entries = array_values( $cloned->entries );
+		$cloned->items = array_values( $cloned->items );
 
 		return $cloned;
 	}
@@ -325,7 +289,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 	{
 		$cloned = clone $this;
 
-		foreach( $cloned->entries as $entry )
+		foreach( $cloned->items as $entry )
 		{
 			foreach( $entry->content as $index => $msg )
 			{
@@ -341,7 +305,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$cloned = clone $this;
 		$ratio = $from / $to;
 
-		foreach( $cloned->entries as $entry )
+		foreach( $cloned->items as $entry )
 		{
 			$entry->setStart( $entry->starts * $ratio );
 			$entry->setEnd( $entry->ends * $ratio );
@@ -357,7 +321,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$desDelta = $desAnchor2 - $desAnchor1;
 		$scale = $desDelta / $srcDelta;
 
-		foreach( $cloned->entries as $entry )
+		foreach( $cloned->items as $entry )
 		{
 			$entry->setStart( $desAnchor1 + (( $entry->starts - $srcAnchor1 ) * $scale ));
 			$entry->setEnd( $desAnchor1 + (( $entry->ends - $srcAnchor1 ) * $scale ));
@@ -372,7 +336,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$stack = [];
 		$collection = new self;
 
-		foreach( $cloned->entries as $entry )
+		foreach( $cloned->items as $entry )
 		{
 			if( $callback( $entry ))
 			{
@@ -409,30 +373,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 
 	public function jsonSerialize(): mixed
 	{
-		return $this->entries;
+		return $this->items;
 	}
 
-	public function offsetExists( mixed $offset ): bool
-	{
-		return isset( $this->entries[ $offset ]);
-	}
-
-	public function offsetGet( mixed $offset ): mixed
-	{
-		return $this->get((int) $offset );
-	}
-
-	public function offsetSet( mixed $offset, mixed $value ): void
-	{
-		throw new RuntimeException(
-			"The Collection object is immutable. You cannot add or update elements using square brackets. Please use the push() or map() methods."
-		);
-	}
-
-	public function offsetUnset( mixed $offset ): void
-	{
-		throw new RuntimeException(
-			"The Collection object is immutable. You cannot remove elements using square brackets. Please use the cut() or filter() methods."
-		);
-	}
 }
