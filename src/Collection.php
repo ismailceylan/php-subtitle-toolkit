@@ -148,11 +148,6 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		return $cloned;
 	}
 
-	public function getEntries(): array
-	{
-		return $this->items;
-	}
-
 	public function from( array $entries ): self
 	{
 		$this->items = $entries;
@@ -190,7 +185,7 @@ class Collection implements JsonSerializable, Countable, ArrayAccess
 		$cloned = clone $this;
 
 		return $cloned
-			->from( array_merge( $cloned->items, $other->getEntries()))
+			->from( array_merge( $cloned->items, $other->toArray()))
 			->sort();
 	}
 

@@ -20,7 +20,7 @@ class TrimAndGapResolver implements OverlapsResolverInterface
 			return $subtitle;
 		}
 
-		$entries = $subtitle->getEntries();
+		$entries = $subtitle->toArray();
 		$processed = [];
 
 		for( $i = 0; $i < $count; $i++ )

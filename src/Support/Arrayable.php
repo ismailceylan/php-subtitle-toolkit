@@ -46,6 +46,11 @@ trait Arrayable
 		throw new InvalidArgumentException( 'Invalid positive index position.' );
 	}
 
+	public function toArray(): array
+	{
+		return $this->items;
+	}
+
 	public function getIterator(): Traversable
 	{
 		return new ArrayIterator( $this->items );

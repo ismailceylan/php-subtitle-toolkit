@@ -12,7 +12,7 @@ class VTT implements RendererInterface
 	{
 		$document = [];
 
-		foreach( $entries->getEntries() as $index => $entry )
+		foreach( $entries->toArray() as $index => $entry )
 		{
 			$block = '';
 
